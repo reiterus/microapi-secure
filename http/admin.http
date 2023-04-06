@@ -1,0 +1,7 @@
+GET http://localhost:8009/admin
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "micro.api.admin"
+}
