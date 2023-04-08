@@ -1,9 +1,12 @@
 parameters:
   welcome: '%env(WELCOME)%'
+  env(AUTH_FILE): '%kernel.project_dir%/config/tokens.json'
 services:
   _defaults:
     autowire: true
     autoconfigure: true
+    bind:
+      $auth: '%env(json:file:resolve:AUTH_FILE)%'
 
   MicroApi\:
     resource: '../src/'
