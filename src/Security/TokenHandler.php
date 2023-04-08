@@ -30,7 +30,7 @@ class TokenHandler implements AccessTokenHandlerInterface
         $identifier = $this->auth[$accessToken] ?? null;
 
         if (null === $identifier) {
-            $message = 'Invalid Access Token...';
+            $message = 'Invalid Access Token';
             $this->setLogPostfix('TOKEN_ACCESS');
             $this->log($message, ['token' => $accessToken]);
 

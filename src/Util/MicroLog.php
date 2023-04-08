@@ -19,11 +19,10 @@ trait MicroLog
     public function log(string $message, array $context = []): void
     {
         $channel = sprintf('%s: %s', $this->channel, $this->logPostfix);
-        $message = sprintf('%s: %s', $channel, $message);
+        $message = sprintf('%s: %s ', $channel, $message);
         $message .= json_encode($context, 256);
 
         $stdout = fopen('php://stdout', 'w');
-
         fwrite($stdout, $message);
         fclose($stdout);
     }
