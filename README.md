@@ -10,8 +10,9 @@ you will always be sure that there is
 
 ### Features of MicroApi Secure out of the box
 - ability to create secure endpoints
-- authentication examples `base` and `json`
+- authentication examples `base`, `json` and `token`
 - example of using an **in-memory provider**
+- PhpStorm http requests
 - 3 configuration files
 - examples of **testing REST API** endpoints
 

@@ -1,6 +1,6 @@
 security:
   password_hashers:
-    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: plaintext
+    Symfony\Component\Security\Core\User\InMemoryUser: plaintext
 
   providers:
     in_memory_users:
@@ -8,6 +8,7 @@ security:
         users:
           admin: { password: '%env(PASSWORD_ADMIN)%', roles: [ 'ROLE_ADMIN' ] }
           user: { password: '%env(PASSWORD_USER)%', roles: [ 'ROLE_USER' ] }
+          manager: { roles: [ 'ROLE_MANAGER' ] }
 
   firewalls:
     dev:
@@ -17,6 +18,11 @@ security:
       pattern: ^/admin
       json_login:
         check_path: api_account_admin
+    account_manager:
+      pattern: ^/manager
+      access_token:
+        token_extractors: header
+        token_handler: MicroApi\Security\TokenHandler
     account_user:
       pattern: ^/user
       http_basic: ~
@@ -25,4 +31,5 @@ security:
 
   access_control:
     - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/manager, roles: ROLE_MANAGER }
     - { path: ^/user, roles: ROLE_USER }

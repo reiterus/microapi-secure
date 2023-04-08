@@ -24,6 +24,12 @@ class Account extends AbstractController
         return $this->json($this->getDefaultData('Admin Account'));
     }
 
+    #[Route('manager', name: 'manager')]
+    public function manager(): JsonResponse
+    {
+        return $this->json($this->getDefaultData('Manager Account'));
+    }
+
     #[Route('user', name: 'user')]
     public function user(): JsonResponse
     {
