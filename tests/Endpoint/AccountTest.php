@@ -40,6 +40,24 @@ class AccountTest extends WebTestCase
     }
 
     /**
+     * @dataProvider dataManager
+     *
+     * @covers \MicroApi\Endpoint\Account::manager
+     */
+    public function testManager(array $server, int $statusCode)
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+        $client->request(method: 'GET', uri: '/manager', server: $server);
+        $code = $client->getResponse()->getStatusCode();
+        $routeName = $client->getRequest()->attributes->get('_route');
+
+        $this->assertJson(strval($client->getResponse()->getContent()));
+        $this->assertEquals($statusCode, $code);
+        $this->assertEquals('api_account_manager', $routeName);
+    }
+
+    /**
      * @dataProvider dataUser
      *
      * @covers \MicroApi\Endpoint\Account::user
@@ -73,6 +91,19 @@ class AccountTest extends WebTestCase
         yield [
             'server' => [],
             'access' => '',
+            'status_code' => 401,
+        ];
+    }
+
+    public static function dataManager(): \Generator
+    {
+        yield [
+            'server' => ['HTTP_Authorization' => 'Bearer token.manager'],
+            'status_code' => 200,
+        ];
+
+        yield [
+            'server' => [],
             'status_code' => 401,
         ];
     }
