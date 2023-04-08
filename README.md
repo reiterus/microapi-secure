@@ -13,6 +13,7 @@ you will always be sure that there is
 - authentication examples `base`, `json` and `token`
 - example of using an **in-memory provider**
 - PhpStorm http requests
+- custom logger with named channels
 - 3 configuration files
 - examples of **testing REST API** endpoints
 
@@ -27,6 +28,14 @@ It's very simple! Just run these two commands:
 
 That's all!  
 Now your API app is available at http://localhost:8009
+
+## Logger
+```shell
+# run command
+docker-compose logs -ft api | grep MICROAPI
+# get log info
+2023-04-08T14:03:09.769011182Z MICROAPI: TOKEN_ACCESS: Invalid Access Token {"token":"wrong.token.manager"}
+```
 
 ## Makefile commands
 For the convenience of working with the project, there are several [make-commands](commands.md): local and for Docker.
