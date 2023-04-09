@@ -1,2 +1,2 @@
 GET http://localhost:8009/user
-Authorization: Basic user micro.api.user
+Authorization: Basic user user.password

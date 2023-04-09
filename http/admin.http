@@ -3,5 +3,5 @@ Content-Type: application/json
 
 {
   "username": "admin",
-  "password": "micro.api.admin"
+  "password": "admin.password"
 }
