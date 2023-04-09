@@ -36,6 +36,12 @@ class Account extends AbstractController
         return $this->json($this->getDefaultData('User Account'));
     }
 
+    #[Route('guest', name: 'guest')]
+    public function guest(): JsonResponse
+    {
+        return $this->json($this->getDefaultData('Guest Account'));
+    }
+
     private function getDefaultData(string $page): array
     {
         return [

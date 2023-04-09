@@ -78,13 +78,33 @@ class AccountTest extends WebTestCase
     }
 
     /**
+     * @dataProvider dataGuest
+     *
+     * @covers \MicroApi\Endpoint\Account::guest
+     */
+    public function testGuest(array $server, int $statusCode): void
+    {
+        self::ensureKernelShutdown();
+        $client = static::createClient();
+
+        $client->request(method: 'GET', uri: '/guest', server: $server);
+        $json = $client->getResponse()->getContent() ?: '{}';
+        $code = $client->getResponse()->getStatusCode();
+        $routeName = $client->getRequest()->attributes->get('_route');
+
+        $this->assertJson(strval($json));
+        $this->assertEquals($statusCode, $code);
+        $this->assertEquals('api_account_guest', $routeName);
+    }
+
+    /**
      * @codeCoverageIgnore
      */
     public static function dataAdmin(): \Generator
     {
         yield [
             'server' => ['CONTENT_TYPE' => 'application/json'],
-            'access' => json_encode(['username' => 'admin', 'password' => 'micro.api.admin']),
+            'access' => json_encode(['username' => 'admin', 'password' => 'admin.password']),
             'status_code' => 200,
         ];
 
@@ -98,7 +118,7 @@ class AccountTest extends WebTestCase
     public static function dataManager(): \Generator
     {
         yield [
-            'server' => ['HTTP_Authorization' => 'Bearer token.manager'],
+            'server' => ['HTTP_Authorization' => 'Bearer manager.token'],
             'status_code' => 200,
         ];
 
@@ -114,7 +134,23 @@ class AccountTest extends WebTestCase
     public static function dataUser(): \Generator
     {
         yield [
-            'server' => ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'micro.api.user'],
+            'server' => ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'user.password'],
+            'status_code' => 200,
+        ];
+
+        yield [
+            'server' => [],
+            'status_code' => 401,
+        ];
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public static function dataGuest(): \Generator
+    {
+        yield [
+            'server' => ['PHP_AUTH_USER' => 'guest', 'PHP_AUTH_PW' => 'guest.password'],
             'status_code' => 200,
         ];
 

@@ -1,2 +1,2 @@
 GET http://localhost:8009/manager
-Authorization: Bearer token.manager
+Authorization: Bearer manager.token
