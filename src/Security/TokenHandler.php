@@ -21,13 +21,14 @@ class TokenHandler implements AccessTokenHandlerInterface
     use MicroLog;
 
     public function __construct(
-        private readonly array $auth
+        private readonly JsonUserLoad $userLoad
     ) {
     }
 
     public function getUserBadgeFrom(string $accessToken): UserBadge
     {
-        $identifier = $this->auth[$accessToken] ?? null;
+        $user = $this->userLoad->byToken($accessToken);
+        $identifier = $user['username'] ?? null;
 
         if (null === $identifier) {
             $message = 'Invalid Access Token';
