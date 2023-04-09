@@ -18,7 +18,7 @@ class JsonUserLoad
     ) {
     }
 
-    public function byCredentials(string $username, string $password): array
+    public function byCredentials(string $username, string $password): ?array
     {
         $user = array_filter(
             $this->users,
@@ -31,22 +31,22 @@ class JsonUserLoad
         return current($user);
     }
 
-    public function byToken(string $value): array
+    public function byToken(string $value): ?array
     {
         return $this->load($value, 'token');
     }
 
-    public function byUsername(string $value): array
+    public function byUsername(string $value): ?array
     {
         return $this->load($value, 'username');
     }
 
-    public function byEmail(string $value): array
+    public function byEmail(string $value): ?array
     {
         return $this->load($value, 'email');
     }
 
-    private function load(string $value, string $key): array
+    private function load(string $value, string $key): ?array
     {
         $user = array_filter(
             $this->users,
@@ -55,6 +55,6 @@ class JsonUserLoad
             }
         );
 
-        return current($user);
+        return current($user) ?: null;
     }
 }

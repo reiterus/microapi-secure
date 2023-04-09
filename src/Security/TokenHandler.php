@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace MicroApi\Security;
 
+use Firebase\JWT\ExpiredException;
 use MicroApi\Util\MicroLog;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\AccessToken\AccessTokenHandlerInterface;
@@ -23,21 +24,38 @@ class TokenHandler implements AccessTokenHandlerInterface
     public function __construct(
         private readonly JsonUserLoad $userLoad
     ) {
+        $this->setLogPostfix('TOKEN_ACCESS');
     }
 
     public function getUserBadgeFrom(string $accessToken): UserBadge
     {
-        $user = $this->userLoad->byToken($accessToken);
+        $user = $this->getJsonUser($accessToken);
         $identifier = $user['username'] ?? null;
 
         if (null === $identifier) {
             $message = 'Invalid Access Token';
-            $this->setLogPostfix('TOKEN_ACCESS');
             $this->log($message, ['token' => $accessToken]);
 
             throw new BadCredentialsException($message);
         }
 
         return new UserBadge($identifier);
+    }
+
+    private function getJsonUser(string $token): ?array
+    {
+        try {
+            $decoded = Firebase::decode($token);
+            $email = $decoded->sub;
+            $user = $this->userLoad->byEmail($email);
+        } catch (ExpiredException $exception) {
+            // Expired JWT token
+            throw $exception;
+        } catch (\Exception $ex) {
+            // Not a JWT token
+            $user = $this->userLoad->byToken($token);
+        }
+
+        return $user;
     }
 }

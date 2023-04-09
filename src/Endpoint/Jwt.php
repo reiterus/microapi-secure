@@ -11,17 +11,22 @@ declare(strict_types=1);
 
 namespace MicroApi\Endpoint;
 
+use MicroApi\Security\Firebase;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class Home extends AbstractController
+#[Route('/jwt', name: 'api_jwt_')]
+class Jwt extends AbstractController
 {
-    #[Route('/', name: 'api_home_index')]
-    public function index(): JsonResponse
+    #[Route('/decode', name: 'decode')]
+    public function decode(Request $request): JsonResponse
     {
-        $welcome = $this->getParameter('welcome');
+        $token = $request->headers->get('authorization');
+        $token = trim(substr(strval($token), 6));
+        $decoded = Firebase::decode($token);
 
-        return $this->json(['home page', $welcome]);
+        return $this->json($decoded);
     }
 }
