@@ -9,7 +9,9 @@ you will always be sure that there is
 **nothing superfluous** in your code.
 
 ### Features of MicroApi Secure out of the box
-- ability to create secure endpoints
+- ability to 
+  - create secure endpoints
+  - use JWT-tokens
 - authentication examples `base`, `json` and `token`
 - example of using a provider 
   - **in-memory**
@@ -31,6 +33,31 @@ It's very simple! Just run these two commands:
 
 That's all!  
 Now your API app is available at http://localhost:8009
+
+## JWT
+To get JWT-token just send http-request to endpoint. For example, `/admin`.
+
+To check/decode this token send request to `jwt/decode` endpoint.
+```shell
+GET http://localhost:8009/jwt/decode
+Authorization: Bearer some.jwt-token
+```
+
+JWT-token structure:
+```json
+{
+  "iat": 1681036036,
+  "exp": 1681036336,
+  "sub": "admin.email@yandex.ru",
+  "user": {
+    "username": "admin",
+    "email": "admin.email@yandex.ru",
+    "roles": [
+      "ROLE_ADMIN"
+    ]
+  }
+}
+```
 
 ## Logger
 ```shell

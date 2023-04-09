@@ -21,7 +21,7 @@ security:
       json_login:
         check_path: api_account_admin
     account_manager:
-      pattern: ^/manager
+      pattern: ^/(manager|jwt)
       provider: in_json_users
       access_token:
         token_extractors: header

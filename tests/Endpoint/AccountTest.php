@@ -49,10 +49,11 @@ class AccountTest extends WebTestCase
         self::ensureKernelShutdown();
         $client = static::createClient();
         $client->request(method: 'GET', uri: '/manager', server: $server);
+        $json = $client->getResponse()->getContent() ?: '{}';
         $code = $client->getResponse()->getStatusCode();
         $routeName = $client->getRequest()->attributes->get('_route');
 
-        $this->assertJson(strval($client->getResponse()->getContent()));
+        $this->assertJson(strval($json));
         $this->assertEquals($statusCode, $code);
         $this->assertEquals('api_account_manager', $routeName);
     }
@@ -109,6 +110,12 @@ class AccountTest extends WebTestCase
         ];
 
         yield [
+            'server' => ['CONTENT_TYPE' => 'application/json'],
+            'access' => json_encode(['username' => 'admin', 'password' => 'wrong.admin.password']),
+            'status_code' => 401,
+        ];
+
+        yield [
             'server' => [],
             'access' => '',
             'status_code' => 401,
@@ -120,6 +127,11 @@ class AccountTest extends WebTestCase
         yield [
             'server' => ['HTTP_Authorization' => 'Bearer manager.token'],
             'status_code' => 200,
+        ];
+
+        yield [
+            'server' => ['HTTP_Authorization' => 'Bearer wrong.manager.token'],
+            'status_code' => 401,
         ];
 
         yield [
@@ -139,6 +151,11 @@ class AccountTest extends WebTestCase
         ];
 
         yield [
+            'server' => ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'wrong.user.password'],
+            'status_code' => 401,
+        ];
+
+        yield [
             'server' => [],
             'status_code' => 401,
         ];
@@ -152,6 +169,11 @@ class AccountTest extends WebTestCase
         yield [
             'server' => ['PHP_AUTH_USER' => 'guest', 'PHP_AUTH_PW' => 'guest.password'],
             'status_code' => 200,
+        ];
+
+        yield [
+            'server' => ['PHP_AUTH_USER' => 'guest', 'PHP_AUTH_PW' => 'wrong.guest.password'],
+            'status_code' => 401,
         ];
 
         yield [
