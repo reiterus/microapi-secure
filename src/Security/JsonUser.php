@@ -26,7 +26,7 @@ class JsonUser implements UserInterface, PasswordAuthenticatedUserInterface
     ) {
     }
 
-    public function __call(string $name, array $arguments)
+    public function __call(string $name, array $arguments): ?string
     {
         $key = str_replace('get', '', strtolower($name));
 
@@ -48,7 +48,7 @@ class JsonUser implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->data['roles'];
     }
 
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
     }
 
@@ -59,6 +59,6 @@ class JsonUser implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function toJson(): string
     {
-        return json_encode($this->data, 128 | 256);
+        return strval(json_encode($this->data, 128 | 256));
     }
 }

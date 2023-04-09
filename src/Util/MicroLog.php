@@ -17,11 +17,20 @@ trait MicroLog
 
     public function log(string $message, array $context = []): void
     {
+        if ('test' == $_ENV['APP_ENV']) {
+            return;
+        }
+
         $channel = sprintf('%s: %s', 'MICROAPI', $this->logPostfix);
         $message = sprintf('%s: %s ', $channel, $message);
         $message .= json_encode($context, 256);
 
         $stdout = fopen('php://stdout', 'w');
+
+        if (!is_resource($stdout)) {
+            throw new \UnexpectedValueException('STDOUT is false');
+        }
+
         fwrite($stdout, $message);
         fclose($stdout);
     }

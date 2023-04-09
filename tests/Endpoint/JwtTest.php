@@ -36,8 +36,9 @@ class JwtTest extends WebTestCase
 
         if ($bearer) {
             $client->request(method: 'GET', uri: '/manager', server: ['HTTP_Authorization' => 'Bearer manager.token']);
-            $data = json_decode($client->getResponse()->getContent(), true);
-            $client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $data['token']));
+            $data = json_decode(strval($client->getResponse()->getContent()), true);
+            $token = is_array($data) ? $data['token'] : '';
+            $client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $token));
         }
 
         $code = $client->getResponse()->getStatusCode();

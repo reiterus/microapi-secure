@@ -22,7 +22,7 @@ class Firebase
     {
         $time = time();
         $expired = $time + self::lifetime();
-        $sub = $data['email'] ?? null;
+        $sub = $data['email'] ?? 'unknown@gmail.com';
         unset($data['password'],$data['token']);
 
         return [

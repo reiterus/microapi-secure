@@ -49,8 +49,10 @@ class Account extends AbstractController
         $user = $this->getUser();
 
         if (is_null($user)) {
-            $data = ['...'];
-        } elseif ($user instanceof JsonUser) {
+            throw new \UnexpectedValueException('User is null...');
+        }
+
+        if ($user instanceof JsonUser) {
             $data = $user->toArray();
         } else {
             $data = [

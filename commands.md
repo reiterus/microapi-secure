@@ -9,6 +9,7 @@
 
 #### Docker
 - make docker-start: run `docker-compose up -d --build && docker-compose exec api composer install`
+- make docker-logs: run `docker-compose logs -ft api`
 - make docker-rebuild: run `rm -rf var/ && rm -rf vendor/ && docker-compose up -d --build && docker-compose exec api composer install`
 - make docker-build: run `docker-compose up -d --build`
 - make docker-install: run `docker-compose exec api composer install`

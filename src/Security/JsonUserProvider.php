@@ -26,6 +26,10 @@ class JsonUserProvider implements UserProviderInterface
     {
         $data = $this->userLoad->byUsername($identifier);
 
+        if (null === $data) {
+            throw new \UnexpectedValueException('User data is null...');
+        }
+
         return new JsonUser($data);
     }
 
