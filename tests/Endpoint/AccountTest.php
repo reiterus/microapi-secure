@@ -44,7 +44,7 @@ class AccountTest extends WebTestCase
      *
      * @covers \MicroApi\Endpoint\Account::manager
      */
-    public function testManager(array $server, int $statusCode)
+    public function testManager(array $server, int $statusCode): void
     {
         self::ensureKernelShutdown();
         $client = static::createClient();

@@ -1,6 +1,8 @@
 parameters:
-	level: 5
+	level: 9
 	paths:
 		- src
 		- tests
 		- public
+	ignoreErrors:
+	    - '#Method (.*) no value type specified in iterable type array.#'
