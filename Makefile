@@ -16,6 +16,9 @@ remover:
 docker-start:
 	docker-compose up -d --build && docker-compose exec api composer install
 
+docker-logs:
+	docker-compose logs -ft api
+
 docker-rebuild:
 	rm -rf var/ && rm -rf vendor/ && docker-compose up -d --build && docker-compose exec api composer install
 
