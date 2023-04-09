@@ -1,0 +1,29 @@
+[
+  {
+    "username": "admin",
+    "password": "admin.password",
+    "email": "admin.email@yandex.ru",
+    "token": "admin.token",
+    "roles": [
+      "ROLE_ADMIN"
+    ]
+  },
+  {
+    "username": "manager.token",
+    "password": "manager.password",
+    "email": "manager.email@yandex.ru",
+    "token": "manager.token",
+    "roles": [
+      "ROLE_MANAGER"
+    ]
+  },
+  {
+    "username": "user",
+    "password": "user.password",
+    "email": "user.email@yandex.ru",
+    "token": "user.token",
+    "roles": [
+      "ROLE_USER"
+    ]
+  }
+]

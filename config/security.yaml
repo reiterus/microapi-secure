@@ -1,14 +1,15 @@
 security:
   password_hashers:
     Symfony\Component\Security\Core\User\InMemoryUser: plaintext
+    Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: plaintext
 
   providers:
     in_memory_users:
       memory:
         users:
-          admin: { password: '%env(PASSWORD_ADMIN)%', roles: [ 'ROLE_ADMIN' ] }
-          user: { password: '%env(PASSWORD_USER)%', roles: [ 'ROLE_USER' ] }
-          manager: { roles: [ 'ROLE_MANAGER' ] }
+          guest: { password: '%env(PASSWORD_GUEST)%', roles: [ 'ROLE_GUEST' ] }
+    in_json_users:
+      id: MicroApi\Security\JsonUserProvider
 
   firewalls:
     dev:
@@ -16,15 +17,22 @@ security:
       security: false
     account_admin:
       pattern: ^/admin
+      provider: in_json_users
       json_login:
         check_path: api_account_admin
     account_manager:
       pattern: ^/manager
+      provider: in_json_users
       access_token:
         token_extractors: header
         token_handler: MicroApi\Security\TokenHandler
     account_user:
       pattern: ^/user
+      provider: in_json_users
+      http_basic: ~
+    account_guest:
+      pattern: ^/guest
+      provider: in_memory_users
       http_basic: ~
     main:
       security: false
@@ -33,3 +41,4 @@ security:
     - { path: ^/admin, roles: ROLE_ADMIN }
     - { path: ^/manager, roles: ROLE_MANAGER }
     - { path: ^/user, roles: ROLE_USER }
+    - { path: ^/guest, roles: ROLE_GUEST }
