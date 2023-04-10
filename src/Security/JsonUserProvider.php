@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace MicroApi\Security;
 
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
@@ -27,7 +28,9 @@ class JsonUserProvider implements UserProviderInterface
         $data = $this->userLoad->byUsername($identifier);
 
         if (null === $data) {
-            throw new \UnexpectedValueException('User data is null...');
+            $message = sprintf('Bad username: %s', $identifier);
+
+            throw new UserNotFoundException($message);
         }
 
         return new JsonUser($data);

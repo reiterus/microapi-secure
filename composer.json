@@ -3,7 +3,7 @@
     "description": "MicroApi Secure is a small API engine based on MicroApi Core and Symfony packages.",
     "keywords": ["api", "rest", "token", "jwt", "microapi", "secure", "engine", "symfony", "reiterus"],
     "type": "project",
-    "version": "1.4.1",
+    "version": "1.4.2",
     "minimum-stability": "dev",
     "license": "MIT",
     "authors": [

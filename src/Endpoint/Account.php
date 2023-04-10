@@ -16,6 +16,7 @@ use MicroApi\Security\JsonUser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 
 #[Route('/', name: 'api_account_')]
 class Account extends AbstractController
@@ -49,7 +50,7 @@ class Account extends AbstractController
         $user = $this->getUser();
 
         if (is_null($user)) {
-            throw new \UnexpectedValueException('User is null...');
+            throw new UserNotFoundException('User is null...');
         }
 
         if ($user instanceof JsonUser) {
