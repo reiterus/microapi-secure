@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace MicroApi\Tests\Endpoint;
 
+use MicroApi\Security\Firebase;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -20,6 +21,16 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class JwtTest extends WebTestCase
 {
+    public const USER = [
+        'username' => 'manager.token',
+        'password' => 'manager.password',
+        'email' => 'manager.email@yandex.ru',
+        'token' => 'manager.token',
+        'roles' => [
+            'ROLE_MANAGER',
+        ],
+    ];
+
     /**
      * @dataProvider dataItems
      *
@@ -27,20 +38,18 @@ class JwtTest extends WebTestCase
      */
     public function testDecode(bool $bearer, array $server, int $statusCode): void
     {
+        if ($bearer) {
+            $payload = Firebase::payload(self::USER);
+            $token = Firebase::encode($payload);
+            $server['HTTP_Authorization'] .= $token;
+        }
+
         self::ensureKernelShutdown();
         $client = static::createClient();
 
-        $client->request(method: 'GET', uri: '/jwt/decode');
+        $client->request(method: 'GET', uri: '/jwt/decode', server: $server);
         $routeName = $client->getRequest()->attributes->get('_route');
-        $response = strval($client->getResponse()->getContent());
-
-        if ($bearer) {
-            $client->request(method: 'GET', uri: '/manager', server: ['HTTP_Authorization' => 'Bearer manager.token']);
-            $data = json_decode(strval($client->getResponse()->getContent()), true);
-            $token = is_array($data) ? $data['token'] : '';
-            $client->setServerParameter('HTTP_Authorization', sprintf('Bearer %s', $token));
-        }
-
+        $response = strval($client->getResponse()->getContent()) ?: '{}';
         $code = $client->getResponse()->getStatusCode();
 
         $this->assertJson($response);
@@ -52,14 +61,14 @@ class JwtTest extends WebTestCase
     {
         yield [
             'bearer' => true,
-            'server' => [],
+            'server' => ['HTTP_Authorization' => 'Bearer '],
             'status_code' => 200,
         ];
 
         yield [
             'bearer' => false,
             'server' => ['HTTP_Authorization' => 'Bearer no-jwt-token'],
-            'status_code' => 500,
+            'status_code' => 401,
         ];
 
         yield [
