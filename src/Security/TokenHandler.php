@@ -24,7 +24,7 @@ class TokenHandler implements AccessTokenHandlerInterface
     public function __construct(
         private readonly JsonUserLoad $userLoad
     ) {
-        $this->setLogPostfix('TOKEN_ACCESS');
+        $this->setLogSuffix('TOKEN_ACCESS');
     }
 
     public function getUserBadgeFrom(string $accessToken): UserBadge
@@ -34,7 +34,7 @@ class TokenHandler implements AccessTokenHandlerInterface
 
         if (null === $identifier) {
             $message = 'Invalid Access Token';
-            $this->log($message, ['token' => $accessToken]);
+            $this->logMicro($message, ['token' => $accessToken]);
 
             throw new BadCredentialsException($message);
         }
