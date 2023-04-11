@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace MicroApi\Endpoint;
 
-use MicroApi\Security\Firebase;
+use MicroApi\Contract\JwtTokenInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -19,27 +19,32 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/', name: 'api_account_')]
 class Account extends AbstractController
 {
+    public function __construct(
+        readonly JwtTokenInterface $jwtToken
+    ) {
+    }
+
     #[Route('admin', name: 'admin')]
     public function admin(): JsonResponse
     {
-        return $this->json(Firebase::token($this->getUser()));
+        return $this->json($this->jwtToken->getResponse($this->getUser()));
     }
 
     #[Route('manager', name: 'manager')]
     public function manager(): JsonResponse
     {
-        return $this->json(Firebase::token($this->getUser()));
+        return $this->json($this->jwtToken->getResponse($this->getUser()));
     }
 
     #[Route('user', name: 'user')]
     public function user(): JsonResponse
     {
-        return $this->json(Firebase::token($this->getUser()));
+        return $this->json($this->jwtToken->getResponse($this->getUser()));
     }
 
     #[Route('guest', name: 'guest')]
     public function guest(): JsonResponse
     {
-        return $this->json(Firebase::token($this->getUser()));
+        return $this->json($this->jwtToken->getResponse($this->getUser()));
     }
 }

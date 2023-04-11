@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace MicroApi\Security;
 
 use Firebase\JWT\ExpiredException;
+use MicroApi\Contract\JsonUserLoadInterface;
+use MicroApi\Contract\JwtTokenInterface;
 use MicroApi\Util\MicroLog;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\AccessToken\AccessTokenHandlerInterface;
@@ -22,7 +24,8 @@ class TokenHandler implements AccessTokenHandlerInterface
     use MicroLog;
 
     public function __construct(
-        private readonly JsonUserLoad $userLoad
+        private readonly JsonUserLoadInterface $userLoad,
+        private readonly JwtTokenInterface $jwtToken
     ) {
         $this->setLogSuffix('TOKEN_ACCESS');
     }
@@ -45,8 +48,8 @@ class TokenHandler implements AccessTokenHandlerInterface
     private function getJsonUser(string $token): ?array
     {
         try {
-            $decoded = Firebase::decode($token);
-            $email = $decoded->sub;
+            $decoded = $this->jwtToken->decode($token);
+            $email = $decoded[JwtTokenInterface::SUB];
             $user = $this->userLoad->byEmail($email);
         } catch (ExpiredException $exception) {
             // Expired JWT token

@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace MicroApi\Security;
 
+use MicroApi\Contract\JsonUserInterface;
+use MicroApi\Contract\JsonUserLoadInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -19,7 +21,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 class JsonUserProvider implements UserProviderInterface
 {
     public function __construct(
-        private readonly JsonUserLoad $userLoad
+        private readonly JsonUserLoadInterface $userLoad
     ) {
     }
 
@@ -38,7 +40,7 @@ class JsonUserProvider implements UserProviderInterface
 
     public function refreshUser(UserInterface $user): UserInterface
     {
-        if (!$user instanceof JsonUser) {
+        if (!$user instanceof JsonUserInterface) {
             $message = sprintf('Invalid user class "%s".', get_class($user));
 
             throw new UnsupportedUserException($message);
