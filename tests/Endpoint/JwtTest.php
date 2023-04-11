@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 namespace MicroApi\Tests\Endpoint;
 
-use MicroApi\Security\Firebase;
+use MicroApi\Contract\JwtTokenInterface;
+use MicroApi\Service\JwtToken;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
@@ -39,8 +40,9 @@ class JwtTest extends WebTestCase
     public function testDecode(bool $bearer, array $server, int $statusCode): void
     {
         if ($bearer) {
-            $payload = Firebase::payload(self::USER);
-            $token = Firebase::encode($payload);
+            $jwt = new JwtToken();
+            $payload = $jwt->getPayload(self::USER);
+            $token = $jwt->encode($payload);
             $server['HTTP_Authorization'] .= $token;
         }
 
@@ -54,8 +56,8 @@ class JwtTest extends WebTestCase
 
         if ($bearer) {
             $data = (array) json_decode(strval($client->getResponse()->getContent()), true);
-            $this->assertArrayHasKey('user', $data);
-            $this->assertEquals(self::USER['email'], $data['user']['email']);
+            $this->assertArrayHasKey(JwtTokenInterface::DATA, $data);
+            $this->assertEquals(self::USER['email'], $data[JwtTokenInterface::DATA]['email']);
         }
 
         $this->assertJson($response);

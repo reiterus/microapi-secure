@@ -4,6 +4,7 @@ parameters:
 		- src
 		- tests
 		- public
+	reportUnmatchedIgnoredErrors: false
 	ignoreErrors:
-	    - '#Method (.*) no value type specified in iterable type array.#'
+	    - '#(Method|Property) (.*) no value type specified in iterable type array.#'
 	    - '#Cannot access offset (.*) on mixed.#'

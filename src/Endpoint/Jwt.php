@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace MicroApi\Endpoint;
 
-use MicroApi\Security\Firebase;
+use MicroApi\Service\JwtToken;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,11 +21,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class Jwt extends AbstractController
 {
     #[Route('/decode', name: 'decode')]
-    public function decode(Request $request): JsonResponse
+    public function decode(Request $request, JwtToken $jwtToken): JsonResponse
     {
         $token = $request->headers->get('authorization');
         $token = trim(substr(strval($token), 6));
-        $decoded = Firebase::decode($token);
+        $decoded = $jwtToken->decode($token);
 
         return $this->json($decoded);
     }

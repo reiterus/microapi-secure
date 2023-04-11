@@ -11,41 +11,59 @@ declare(strict_types=1);
 
 namespace MicroApi\Security;
 
-class JsonUserLoad
+use MicroApi\Contract\JsonUserInterface;
+use MicroApi\Contract\JsonUserLoadInterface;
+
+class JsonUserLoad implements JsonUserLoadInterface
 {
     public function __construct(
         private readonly array $users
     ) {
     }
 
+    /**
+     * Load user from json-file by username and password.
+     */
     public function byCredentials(string $username, string $password): ?array
     {
         $user = array_filter(
             $this->users,
             function (array $item) use ($username, $password) {
-                return $username == $item['username']
-                    && $password == $item['password'];
+                return $username == $item[JsonUserInterface::USERNAME]
+                    && $password == $item[JsonUserInterface::PASSWORD];
             }
         );
 
         return current($user);
     }
 
+    /**
+     * Load user from json-file by token.
+     */
     public function byToken(string $value): ?array
     {
-        return $this->load($value, 'token');
+        return $this->load($value, JsonUserInterface::TOKEN);
     }
 
+    /**
+     * Load user from json-file by username.
+     */
     public function byUsername(string $value): ?array
     {
-        return $this->load($value, 'username');
+        return $this->load($value, JsonUserInterface::USERNAME);
     }
 
+    /**
+     * Load user from json-file by email.
+     */
     public function byEmail(string $value): ?array
     {
-        return $this->load($value, 'email');
+        return $this->load($value, JsonUserInterface::EMAIL);
     }
 
+    /**
+     * Load user by value from key.
+     */
     private function load(string $value, string $key): ?array
     {
         $user = array_filter(

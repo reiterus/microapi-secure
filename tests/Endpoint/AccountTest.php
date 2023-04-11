@@ -146,12 +146,12 @@ class AccountTest extends WebTestCase
     public static function dataUser(): \Generator
     {
         yield [
-            'server' => ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'user.password'],
+            'server' => ['HTTP_Authorization' => 'Bearer user.token'],
             'status_code' => 200,
         ];
 
         yield [
-            'server' => ['PHP_AUTH_USER' => 'user', 'PHP_AUTH_PW' => 'wrong.user.password'],
+            'server' => ['HTTP_Authorization' => 'Bearer wrong.user.token'],
             'status_code' => 401,
         ];
 

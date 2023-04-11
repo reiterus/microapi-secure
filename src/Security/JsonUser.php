@@ -11,41 +11,65 @@ declare(strict_types=1);
 
 namespace MicroApi\Security;
 
+use MicroApi\Contract\JsonUserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-/**
- * @method string getUsername()
- * @method string getEmail()
- * @method string getToken()
- */
-class JsonUser implements UserInterface, PasswordAuthenticatedUserInterface
+class JsonUser implements UserInterface, PasswordAuthenticatedUserInterface, JsonUserInterface
 {
     public function __construct(
         private readonly array $data
     ) {
     }
 
-    public function __call(string $name, array $arguments): ?string
-    {
-        $key = str_replace('get', '', strtolower($name));
-
-        return $this->data[$key];
-    }
-
+    /**
+     * Get identifier for json-user.
+     */
     public function getUserIdentifier(): string
     {
         return $this->getUsername();
     }
 
-    public function getPassword(): ?string
+    /**
+     * Get json-user username.
+     */
+    public function getUsername(): string
     {
-        return $this->data['password'];
+        return $this->data[self::USERNAME];
     }
 
+    /**
+     * Get json-user email.
+     */
+    public function getEmail(): string
+    {
+        return $this->data[self::EMAIL];
+    }
+
+    /**
+     * Get json-user token.
+     */
+    public function getToken(): string
+    {
+        return $this->data[self::TOKEN];
+    }
+
+    /**
+     * Get json-user password.
+     */
+    public function getPassword(): string
+    {
+        return $this->data[self::PASSWORD];
+    }
+
+    /**
+     * Get json-user roles.
+     *
+     * @return array|string[]
+     */
     public function getRoles(): array
     {
-        return $this->data['roles'];
+        return $this->data[self::ROLES];
     }
 
     public function eraseCredentials(): void
@@ -55,10 +79,5 @@ class JsonUser implements UserInterface, PasswordAuthenticatedUserInterface
     public function toArray(): array
     {
         return $this->data;
-    }
-
-    public function toJson(): string
-    {
-        return strval(json_encode($this->data, 128 | 256));
     }
 }

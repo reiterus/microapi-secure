@@ -15,21 +15,17 @@ security:
     dev:
       pattern: ^/(css|images|js)/
       security: false
+    accounts_multiple:
+      pattern: ^/(user|manager|jwt)
+      provider: in_json_users
+      access_token:
+        token_extractors: header
+        token_handler: MicroApi\Security\TokenHandler
     account_admin:
       pattern: ^/admin
       provider: in_json_users
       json_login:
         check_path: api_account_admin
-    account_manager:
-      pattern: ^/(manager|jwt)
-      provider: in_json_users
-      access_token:
-        token_extractors: header
-        token_handler: MicroApi\Security\TokenHandler
-    account_user:
-      pattern: ^/user
-      provider: in_json_users
-      http_basic: ~
     account_guest:
       pattern: ^/guest
       provider: in_memory_users
