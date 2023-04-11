@@ -13,24 +13,62 @@ namespace MicroApi\Security;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Symfony\Component\Security\Core\Exception\UserNotFoundException;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class Firebase
 {
     public const ALGO = 'HS256';
+    public const REFRESH = 1800;
 
-    public static function payload(array $data): array
+    public static function token(?UserInterface $user): array
+    {
+        if (is_null($user)) {
+            throw new UserNotFoundException('User is null...');
+        }
+
+        if ($user instanceof JsonUser) {
+            $data = $user->toArray();
+        } else {
+            $data = [
+                'username' => $user->getUserIdentifier(),
+            ];
+        }
+
+        $payloadAccess = self::payload($data);
+        $payloadRefresh = self::payload($data, self::REFRESH);
+
+        return [
+            'access_token' => self::encode($payloadAccess),
+            'expires_in' => self::lifetime(),
+            'refresh_expires_in' => self::REFRESH,
+            'refresh_token' => self::encode($payloadRefresh),
+        ];
+    }
+
+    public static function payload(array $data, int $refresh = 0): array
     {
         $time = time();
-        $expired = $time + self::lifetime();
+
+        $expired = $refresh
+            ? $time + $refresh
+            : $time + self::lifetime();
+
         $sub = $data['email'] ?? 'unknown@gmail.com';
         unset($data['password'],$data['token']);
 
-        return [
+        $result = [
             'iat' => $time,
             'exp' => $expired,
             'sub' => $sub,
             'user' => $data,
         ];
+
+        if ($refresh) {
+            unset($result['user']);
+        }
+
+        return $result;
     }
 
     public static function encode(array $payload): string

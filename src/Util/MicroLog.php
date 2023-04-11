@@ -13,15 +13,15 @@ namespace MicroApi\Util;
 
 trait MicroLog
 {
-    private string $logPostfix = '';
+    private string $logSuffix = '';
 
-    public function log(string $message, array $context = []): void
+    public function logMicro(string $message, array $context = []): void
     {
         if ('test' == $_ENV['APP_ENV']) {
             return;
         }
 
-        $channel = sprintf('%s: %s', 'MICROAPI', $this->logPostfix);
+        $channel = sprintf('%s: %s', 'MICROAPI', $this->logSuffix);
         $message = sprintf('%s: %s ', $channel, $message);
         $message .= json_encode($context, 256);
 
@@ -35,8 +35,8 @@ trait MicroLog
         fclose($stdout);
     }
 
-    public function setLogPostfix(string $logPostfix): void
+    public function setLogSuffix(string $logSuffix): void
     {
-        $this->logPostfix = $logPostfix;
+        $this->logSuffix = $logSuffix;
     }
 }

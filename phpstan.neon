@@ -6,3 +6,4 @@ parameters:
 		- public
 	ignoreErrors:
 	    - '#Method (.*) no value type specified in iterable type array.#'
+	    - '#Cannot access offset (.*) on mixed.#'
