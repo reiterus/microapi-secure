@@ -9,7 +9,7 @@
     ]
   },
   {
-    "username": "manager.token",
+    "username": "manager",
     "password": "manager.password",
     "email": "manager.email@yandex.ru",
     "token": "manager.token",

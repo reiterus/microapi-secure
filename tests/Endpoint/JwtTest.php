@@ -22,7 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 class JwtTest extends WebTestCase
 {
     public const USER = [
-        'username' => 'manager.token',
+        'username' => 'manager',
         'password' => 'manager.password',
         'email' => 'manager.email@yandex.ru',
         'token' => 'manager.token',
@@ -51,6 +51,12 @@ class JwtTest extends WebTestCase
         $routeName = $client->getRequest()->attributes->get('_route');
         $response = strval($client->getResponse()->getContent()) ?: '{}';
         $code = $client->getResponse()->getStatusCode();
+
+        if ($bearer) {
+            $data = (array) json_decode(strval($client->getResponse()->getContent()), true);
+            $this->assertArrayHasKey('user', $data);
+            $this->assertEquals(self::USER['email'], $data['user']['email']);
+        }
 
         $this->assertJson($response);
         $this->assertEquals($statusCode, $code);
